@@ -9,15 +9,9 @@ export class UsersController {
 
   @Post()
   create(
-    @Body("email") email: string,
-    @Body("password") password: string,
-    @Body("name") name: string,
-
+    @Body() userDB: CreateUserDto,
   ) {
-
-    console.log('email: ', email, 'password: ', password, 'name: ', name);
-
-    return this.usersService.create(email, password, name)
+    return this.usersService.create(userDB);
   }
 
   @Get()

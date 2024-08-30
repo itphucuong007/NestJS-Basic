@@ -13,20 +13,21 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) { }
 
   getHashPassword = (password: string) => {
-    var bcrypt = require('bcryptjs');
     var salt = genSaltSync(10);
     var hash = hashSync("B4c0/\/", salt);
     return hash;
   }
 
-  async create(email: string, password: string, name: string) {
-
-    const hashPassword = this.getHashPassword(password)
+  async create(userDB: CreateUserDto) {
+    const hashPassword = this.getHashPassword(userDB.password)
 
     let user = await this.userModel.create({
-      email, password: hashPassword, name
+      email: userDB.email,
+      password: hashPassword,
+      name: userDB.name
+      
     })
-    
+
     return user;
   }
 
