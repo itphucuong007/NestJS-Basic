@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -21,7 +22,9 @@ import { UsersModule } from './users/users.module';
       isGlobal: true,
     }),
 
-    UsersModule
+    UsersModule,
+
+    AuthModule
     
   ],
 
