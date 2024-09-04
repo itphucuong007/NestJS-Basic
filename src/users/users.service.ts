@@ -14,7 +14,11 @@ export class UsersService {
 
   getHashPassword = (password: string) => {
     var salt = genSaltSync(10);
-    var hash = hashSync("B4c0/\/", salt);
+
+    // fix create api create new user for video 22.2
+    // link: http://localhost:8000/users/
+    var hash = hashSync(password, salt);
+
     return hash;
   }
 
