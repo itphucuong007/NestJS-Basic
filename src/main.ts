@@ -13,13 +13,24 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   const reflector = app.get(Reflector);
-  app.useGlobalGuards(new JwtAuthGuard(reflector));
+
+  // app.useGlobalGuards(new JwtAuthGuard(reflector));
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs');
   app.useGlobalPipes(new ValidationPipe());
-  
+
+  // config CORS
+  app.enableCors({
+    "origin": "http://localhost:3000/",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+  });
+
+
   await app.listen(configService.get<string>('PORT'));
+
 }
 bootstrap();
