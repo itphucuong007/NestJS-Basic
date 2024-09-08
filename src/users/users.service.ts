@@ -2,21 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
 import mongoose, { Model } from 'mongoose';
-
 import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
+
+import { SoftDeleteModel, softDeletePlugin } from 'soft-delete-plugin-mongoose';
+import { User, UserDocument } from './schemas/user.schema';
+
 
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectModel(User.name) private userModel: Model<User>) { }
+  constructor(
+    @InjectModel(User.name)
+
+    private userModel: SoftDeleteModel<UserDocument>
+
+  ) { }
 
   getHashPassword = (password: string) => {
     var salt = genSaltSync(10);
-
-    // fix create api create new user for video 22.2
-    // link: http://localhost:8000/users/
     var hash = hashSync(password, salt);
 
     return hash;
@@ -53,7 +57,6 @@ export class UsersService {
   }
 
 
-  // tài liệu: https://www.npmjs.com/package/bcrypt 
   isValidPassword(password: string, hash: string) {
     return compareSync(password, hash);
   }
@@ -65,11 +68,11 @@ export class UsersService {
   }
 
   remove(id: string) {
-
     if (!mongoose.Types.ObjectId.isValid(id))
       return 'Not found user ID';
 
-    return this.userModel.deleteOne({
+    return this.userModel.softDelete({
+
       _id: id,
     });
 
