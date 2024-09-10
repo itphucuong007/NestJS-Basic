@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-
 import { JwtService } from '@nestjs/jwt';
+
+import { IUser } from 'src/users/user.interface';
 
 @Injectable()
 export class AuthService {
@@ -9,7 +10,7 @@ export class AuthService {
         private usersService: UsersService,
 
         private jwtService: JwtService,
-        
+
     ) { }
 
     //ussername/ pass là 2 tham số thư viện passport nó ném về
@@ -25,14 +26,26 @@ export class AuthService {
         return null;
     }
 
-    async login(user: any) {
+    async login(user: IUser) {
+        const { _id, name, email, role } = user;
         const payload = {
-            username: user.email,
-            sub: user._id
+            sub: "token login", // Thêm subject
+            iss: "from server", // thêm issuer
+            _id,
+            name,
+            email,
+            role
         };
+
         return {
             access_token: this.jwtService.sign(payload),
+            _id,
+            name,
+            email,
+            role
         };
     }
+
+
 
 }

@@ -11,26 +11,25 @@ import { LocalAuthGuard } from './auth/local-auth.guard';
 @Controller()
 export class AppController {
   constructor(
-    private readonly appService: AppService,
-    private configService: ConfigService,
-
-    private authService: AuthService
+    // private readonly appService: AppService,
+    // private configService: ConfigService,
+    // private authService: AuthService
 
   ) { }
 
-  @Public()
-  @UseGuards(LocalAuthGuard)
-  @Post('/login')
-  handleLogin(@Request() req) {
-    return this.authService.login(req.user);
-  }
+  // @Public()
+  // @UseGuards(LocalAuthGuard)
+  // @Post('/login')
+  // handleLogin(@Request() req) {
+  //   return this.authService.login(req.user);
+  // }
 
   
-  @Public()
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
+  // @Public()
+  // @Get('profile')
+  // getProfile(@Request() req) {
+  //   return req.user;
+  // }
 
   
 
