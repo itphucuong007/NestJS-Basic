@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-
 import { User } from 'src/decorator/customize';
 import { IUser } from 'src/users/user.interface';
+
+
 
 @Controller('companies')
 export class CompaniesController {
@@ -27,6 +28,13 @@ export class CompaniesController {
     return this.companiesService.update(id, updateCompanyDto, user);
   }
 
+  @Delete(':id')
+  remove(
+    @Param('id') id: string,
+    @User() user: IUser,
+  ) {
+    return this.companiesService.remove(id, user);
+  }
 
   @Get()
   findAll() {
@@ -39,8 +47,5 @@ export class CompaniesController {
   }
 
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.companiesService.remove(+id);
-  }
+
 }

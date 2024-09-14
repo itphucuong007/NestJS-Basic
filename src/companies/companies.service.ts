@@ -4,7 +4,6 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { Company, CompanyDocument } from './schemas/company.schema';
 import { InjectModel } from '@nestjs/mongoose';
-
 import { IUser } from 'src/users/user.interface';
 
 
@@ -40,11 +39,29 @@ export class CompaniesService {
     );
   }
 
+  async remove(id: string, user: IUser) {
+    await this.companyModel.updateOne(
+      { _id: id },
+      {
+        deletedBy: {
+          _id: user._id,
+          email: user.email
+        }
+      }
+    );
 
+    return this.companyModel.softDelete({
+      _id: id,
+    });
+
+  }
 
   findAll() {
     return `This action returns all companies`;
   }
+
+
+
 
   findOne(id: number) {
     return `This action returns a #${id} company`;
@@ -52,7 +69,5 @@ export class CompaniesService {
 
 
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
-  }
+
 }
