@@ -6,6 +6,8 @@ import { Company, CompanyDocument } from './schemas/company.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from 'src/users/user.interface';
 
+import aqp from 'api-query-params';
+
 
 @Injectable()
 export class CompaniesService {
@@ -54,20 +56,49 @@ export class CompaniesService {
       _id: id,
     });
 
+
   }
 
-  findAll() {
-    return `This action returns all companies`;
+  async findAll(currentPage: number, limit: string, qs: string) {
+    const { filter, sort, population } = aqp(qs);
+    delete filter.page;
+    delete filter.limit;
+
+    let offset = (+currentPage - 1) * (+limit);
+    let defaultLimit = +limit ? +limit : 10;
+
+    const totalItems = (await this.companyModel.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / defaultLimit);
+
+    const result = await this.companyModel.find(filter)
+      .skip(offset)
+      .limit(defaultLimit)
+      // @ts-ignore: Unreachable code error
+      .sort(sort)
+      .populate(population)
+      .exec();
+
+    return {
+      meta: {
+        //trang hiện tại 
+        current: currentPage,
+        //số lượng bản ghi đã lấy 
+        pageSize: limit,
+        //tổng số trang với điều kiện query 
+        pages: totalPages,
+        // tổng số phần tử (số bản ghi) 
+        total: totalItems
+      },
+      //kết quả query 
+      result
+    }
+
   }
-
-
 
 
   findOne(id: number) {
     return `This action returns a #${id} company`;
   }
-
-
 
 
 }
