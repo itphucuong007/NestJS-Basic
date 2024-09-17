@@ -1,10 +1,10 @@
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { User } from 'src/decorator/customize';
 import { IUser } from 'src/users/user.interface';
-
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+
+import { ResponseMessage, User } from 'src/decorator/customize';
 
 
 @Controller('companies')
@@ -37,12 +37,15 @@ export class CompaniesController {
   }
 
   @Get()
+
+  @ResponseMessage("Fetch List Company with paginate")
+  
   findAll(
     @Query('page') currentPage: string,
     @Query('limit') limit: string,
     @Query() qs: string,
 
-  ) {
+  ): Promise<{ meta: { current: number; pageSize: string; pages: number; total: number; }; result: Omit<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company> & Omit<import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company & { _id: import("mongoose").Types.ObjectId; }, never>> & Omit<import("mongoose").Document<unknown, {}, import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company> & Omit<import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company & { _id: import("mongoose").Types.ObjectId; }, never> & Required<{ _id: import("mongoose").Types.ObjectId; }>, never>, never>[]; }> {
     return this.companiesService.findAll(+currentPage, limit, qs);
   }
 
