@@ -64,6 +64,9 @@ export class User {
   @Prop()
   deleteAt: Date;
 
+  @Prop()
+  refreshToken: String;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
