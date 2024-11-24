@@ -94,7 +94,7 @@ export class AuthService {
             })
 
             let user = await this.usersService.findUserByToken(refreshToken);
-            
+
             if (user) {
                 const { _id, name, email, role } = user;
                 const payload = {
@@ -139,5 +139,13 @@ export class AuthService {
             throw new BadRequestException("Refresh token không hợp lệ. Vui lòng login lại")
         }
     }
+
+    logout = async (response: Response, user: IUser) => {
+        await this.usersService.updateUserToken("", user._id);
+        response.clearCookie("refresh_token");
+        return "ok";
+    }
+
+
 
 }
