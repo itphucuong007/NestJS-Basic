@@ -45,7 +45,7 @@ export class CompaniesController {
     @Query('pageSize') limit: string,
     @Query() qs: string,
 
-  ): Promise<{ meta: { current: number; pageSize: string; pages: number; total: number; }; result: Omit<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company> & Omit<import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company & { _id: import("mongoose").Types.ObjectId; }, never>> & Omit<import("mongoose").Document<unknown, {}, import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company> & Omit<import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company & { _id: import("mongoose").Types.ObjectId; }, never> & Required<{ _id: import("mongoose").Types.ObjectId; }>, never>, never>[]; }> {
+  ) {
     return this.companiesService.findAll(+currentPage, limit, qs);
   }
 
