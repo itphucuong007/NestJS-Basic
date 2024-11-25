@@ -41,8 +41,8 @@ export class CompaniesController {
   @ResponseMessage("Fetch List Company with paginate")
   
   findAll(
-    @Query('page') currentPage: string,
-    @Query('limit') limit: string,
+    @Query('current') currentPage: string,
+    @Query('pageSize') limit: string,
     @Query() qs: string,
 
   ): Promise<{ meta: { current: number; pageSize: string; pages: number; total: number; }; result: Omit<import("mongoose").Document<unknown, {}, import("mongoose").Document<unknown, {}, import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company> & Omit<import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company & { _id: import("mongoose").Types.ObjectId; }, never>> & Omit<import("mongoose").Document<unknown, {}, import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company> & Omit<import("e:/Programs Files/LearnNestJS/nestjs-basic/src/companies/schemas/company.schema").Company & { _id: import("mongoose").Types.ObjectId; }, never> & Required<{ _id: import("mongoose").Types.ObjectId; }>, never>, never>[]; }> {
