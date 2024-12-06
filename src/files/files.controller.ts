@@ -2,8 +2,6 @@ import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Public } from 'src/decorator/customize';
-
 import {
   Controller,
   Get,
@@ -18,6 +16,7 @@ import {
 } from '@nestjs/common';
 import { Express } from 'express';
 
+import { Public, ResponseMessage } from 'src/decorator/customize';
 
 @Controller('files')
 export class FilesController {
@@ -25,6 +24,9 @@ export class FilesController {
 
   @Public()
   @Post('upload')
+  
+  @ResponseMessage("upload single file")
+
   @UseInterceptors(FileInterceptor('keyNeedUpload'))
 
   uploadFile(
@@ -42,7 +44,9 @@ export class FilesController {
     )
     file_success: Express.Multer.File
   ) {
-    console.log(file_success);
+    return {
+      fileName: file_success.filename
+    }
   }
 
 
