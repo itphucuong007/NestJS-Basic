@@ -17,6 +17,9 @@ export class CreateJobDto {
     @IsNotEmpty({ message: 'chưa nhập name' })
     name: string;
 
+    @IsNotEmpty({ message: 'chưa có logo' })
+    logo: string;
+
     @IsNotEmpty({ message: 'chưa nhập skills' })
     @IsArray({ message: 'chưa nhập skills' })
     @IsString({ each: true, message: 'chưa nhập skills' })
@@ -27,6 +30,9 @@ export class CreateJobDto {
     @ValidateNested()
     @Type(() => Company)
     company: Company;
+
+    @IsNotEmpty({ message: 'chưa có location' })
+    location: string;
 
     @IsNotEmpty({ message: 'chưa nhập salary' })
     salary: number;

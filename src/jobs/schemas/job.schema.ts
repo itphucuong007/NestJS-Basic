@@ -15,8 +15,12 @@ export class Job {
   @Prop({ type: Object })
   company: {
     _id: mongoose.Schema.Types.ObjectId,
-    name: string
+    name: string,
+    logo: string,
   };
+
+  @Prop()
+  location: string;
 
   @Prop()
   salary: number;
@@ -45,7 +49,7 @@ export class Job {
     email: string;
   }
 
-  
+
   @Prop({ type: Object })
   updatedBy: {
     _id: mongoose.Schema.Types.ObjectId

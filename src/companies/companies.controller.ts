@@ -4,7 +4,7 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 import { IUser } from 'src/users/user.interface';
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 
 
 @Controller('companies')
@@ -37,6 +37,7 @@ export class CompaniesController {
   }
 
   @Get()
+  @Public()
   @ResponseMessage("Fetch List Company with paginate")
   findAll(
     @Query('current') currentPage: string,
@@ -48,6 +49,7 @@ export class CompaniesController {
   }
 
   @Get(':id')
+  @Public()
   findOne(@Param('id') id: string) {
     return this.companiesService.findOne(+id);
   }
