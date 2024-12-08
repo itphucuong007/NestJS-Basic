@@ -50,8 +50,9 @@ export class CompaniesController {
 
   @Get(':id')
   @Public()
+  @ResponseMessage("Fetch List Company by id")
   findOne(@Param('id') id: string) {
-    return this.companiesService.findOne(+id);
+    return this.companiesService.findOne(id);
   }
 
 
