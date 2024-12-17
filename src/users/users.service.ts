@@ -33,43 +33,18 @@ export class UsersService {
     return hash;
   }
 
-  // async create(userDB: CreateUserDto) {
-  //   const hashPassword = this.getHashPassword(userDB.password)
-  //   let user = await this.userModel.create({
-  //     email: userDB.email,
-  //     password: hashPassword,
-  //     name: userDB.name
-  //   })
-  //   return user;
-  // }
-
-  // findOne(id: string) {
-  //   if (!mongoose.Types.ObjectId.isValid(id))
-  //     return 'Not found user ID';
-
-  //   return this.userModel.findOne({
-  //     _id: id,
-  //   });
-
-  // }
-
 
   findOneByUsername(username: string) {
     return this.userModel.findOne({
       email: username
     })
+      .populate({ path: "role", select: { name: 1, permissions: 1 } })
   }
 
 
   isValidPassword(password: string, hash: string) {
     return compareSync(password, hash);
   }
-
-
-  // async update(updateUserDto: UpdateUserDto) {
-  //   return await this.userModel.updateOne({ _id: updateUserDto._id }, { ...updateUserDto })
-  // }
-
 
 
   async register(user: RegisterUserDto) {
@@ -144,21 +119,14 @@ export class UsersService {
 
 
 
-  // remove(id: string) {
-  //   if (!mongoose.Types.ObjectId.isValid(id))
-  //     return 'Not found user ID';
-
-  //   return this.userModel.softDelete({
-
-  //     _id: id,
-  //   });
-
-  // }
-
-
   async remove(id: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(id))
       return "not found user";
+
+    const foundUser = await this.userModel.findById(id);
+    if (foundUser.email === "admin@gmail.com") {
+      throw new BadRequestException('Không thể xoá tài khoản admin@gmail.com');
+    }
 
     await this.userModel.updateOne(
       { _id: id },
@@ -183,12 +151,11 @@ export class UsersService {
     return await this.userModel.findOne({
       _id: id
     }).select("-password")
+
+      .populate({ path: "role", select: { name: 1, _id: 1 } });
   }
 
 
-  // findAll() {
-  //   return `This action returns all users`;
-  // }
 
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population } = aqp(qs);
