@@ -3,15 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
 import { SoftDeleteModel, softDeletePlugin } from 'soft-delete-plugin-mongoose';
-
 import { User as UserM, UserDocument } from './schemas/user.schema';
 import { User } from 'src/decorator/customize';
-
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { IUser } from './user.interface';
-
 import aqp from 'api-query-params';
+
+import { USER_ROLE } from 'src/databases/sample';
+import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
 
 
 
@@ -21,8 +21,10 @@ export class UsersService {
   constructor(
     // tránh trùng lặp với decorator User
     @InjectModel(UserM.name)
+    private userModel: SoftDeleteModel<UserDocument>,
 
-    private userModel: SoftDeleteModel<UserDocument>
+    @InjectModel(Role.name)
+    private roleModel: SoftDeleteModel<RoleDocument>
 
   ) { }
 
@@ -35,11 +37,10 @@ export class UsersService {
 
 
   findOneByUsername(username: string) {
-    return this.userModel.findOne({
-      email: username
-    })
-      .populate({ path: "role", select: { name: 1, permissions: 1 } })
+    return this.userModel.findOne({ email: username })
+      .populate({ path: "role", select: { name: 1 } })
   }
+
 
 
   isValidPassword(password: string, hash: string) {
@@ -56,6 +57,8 @@ export class UsersService {
       throw new BadRequestException(`Email: ${email} is ready exist `)
     }
 
+    const userRole = await this.roleModel.findOne({ name: USER_ROLE });
+
     const hashPassword = this.getHashPassword(password);
     let newRegister = await this.userModel.create({
       name,
@@ -64,7 +67,10 @@ export class UsersService {
       age,
       gender,
       address,
-      role: "USER"
+      // role: "USER"
+
+      role: userRole?._id
+
     })
 
     return newRegister;
@@ -156,7 +162,7 @@ export class UsersService {
   }
 
 
-
+ 
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population } = aqp(qs);
     delete filter.current;
@@ -198,6 +204,7 @@ export class UsersService {
 
   findUserByToken = async (refreshToken: string) => {
     return await this.userModel.findOne({ refreshToken })
+      .populate({ path: "role", select: { name: 1 } })
   }
 
 }

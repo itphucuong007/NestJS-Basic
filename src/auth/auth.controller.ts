@@ -3,15 +3,18 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
-
 import { Body, Controller, Post, Req, Res, UseGuards, Get } from '@nestjs/common';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/user.interface';
 
+import { RolesService } from 'src/roles/roles.service';
+
 @Controller('auth')
 export class AuthController {
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+
+    private rolesService: RolesService
 
   ) { }
 
@@ -26,13 +29,6 @@ export class AuthController {
     return this.authService.login(req.user, response);
   }
 
-
-  // @Public()
-  // @Get('profile')
-  // getProfile(@Request() req) {
-  //   return req.user;
-  // }
-
   @Public()
   @ResponseMessage('Register a new user')
   @Post('/register')
@@ -42,7 +38,9 @@ export class AuthController {
 
   @ResponseMessage(' Get user information')
   @Get('/account')
-  handleGetAccount(@User() user: IUser) {
+  async handleGetAccount(@User() user: IUser) {
+    const temp = await this.rolesService.findOne(user.role._id) as any;
+    user.permissions = temp.permissions;
     return { user };
   }
 
